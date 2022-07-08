@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wikier</title>
+    <style>
+        header{
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <h1>Wikier</h1>
+    </main>
+    <script>
+      let menuItems;
+      fetch("/api/menu")
+        .then((response) => response.json())
+        .then((data) => {
+          menuItems = data;
+          menuItems.forEach((menuItem) => {
+            if(menuItem.includes(".order")) return
+            let link = document.createElement("a");
+            link.innerHTML = menuItem;
+            link.href = window.location.href + menuItem;
+            document.getElementsByTagName("header")[0].append(link);
+          });
+        });
+    </script>
+  </body>
+</html>
