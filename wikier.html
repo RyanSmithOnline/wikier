@@ -6,24 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wikier</title>
     <style>
+        body {
+            display: flex;
+            flex-direction: row;
+          }
       header {
         display: flex;
         flex-direction: column;
       }
-      iframe {
-        display: flex;
-      }
     </style>
   </head>
   <body>
-    <header></header>
-    <main>
+    <header></header><main>
       <h1>Wikier</h1>
       <div id="content"></div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/showdown@latest/dist/showdown.min.js"></script>
     <script>
-      let converter = new showdown.Converter({tables: true});
+      let converter = new showdown.Converter({ tables: true });
       let menuItems;
       fetch("/api/menu")
         .then((response) => response.json())
@@ -32,8 +32,7 @@
           menuItems.forEach((menuItem) => {
             if (menuItem.includes(".order")) return;
             let link = document.createElement("a");
-
-            link.innerHTML = menuItem;
+            link.innerHTML = decodeURIComponent(menuItem.substring(menuItem.lastIndexOf('\\') + 1).replaceAll("-", " "));
             link.onclick = () => {
               fetch(window.location.href + encodeURIComponent(menuItem))
                 .then((response) => response.text())

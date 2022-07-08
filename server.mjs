@@ -47,8 +47,8 @@ createMenuPaths(wikiPath, function (err, results) {
       res.writeHead(200, { "Content-Type": "text/html" });
       res.end(fs.readFileSync("wikier.html"));
     } else {
-      let filePath = wikiPath + decodeURIComponent(req.url); // .replaceAll("---", "-%2D-")
-      fs.readFile(filePath, "ascii", function (error, content) {
+      let filePath = wikiPath + decodeURIComponent(req.url);
+      fs.readFile(filePath, function (error, content) {
         if (error) {
           console.log(error);
           return;
