@@ -23,7 +23,7 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/showdown@latest/dist/showdown.min.js"></script>
     <script>
-      let converter = new showdown.Converter();
+      let converter = new showdown.Converter({tables: true});
       let menuItems;
       fetch("/api/menu")
         .then((response) => response.json())
@@ -31,11 +31,11 @@
           menuItems = data;
           menuItems.forEach((menuItem) => {
             if (menuItem.includes(".order")) return;
-            if (menuItem.includes(".attachments")) return;
             let link = document.createElement("a");
+
             link.innerHTML = menuItem;
             link.onclick = () => {
-              fetch(window.location.href + menuItem)
+              fetch(window.location.href + encodeURIComponent(menuItem))
                 .then((response) => response.text())
                 .then(
                   (result) =>

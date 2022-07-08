@@ -33,7 +33,9 @@ let menu = [];
 
 createMenuPaths(wikiPath, function (err, results) {
   if (err) throw err;
-  menu = results;
+  menu = results.filter((e) => {
+    return e.includes(".attachments") !== true;
+  });
 });
 
 (() =>
@@ -42,12 +44,15 @@ createMenuPaths(wikiPath, function (err, results) {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(menu));
     } else if (req.url === "/") {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end(fs.readFileSync('wikier.html'));
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(fs.readFileSync("wikier.html"));
     } else {
-      let filePath = wikiPath + req.url;
-      fs.readFile(filePath, function (error, content) {
-        if (error) return;
+      let filePath = wikiPath + decodeURIComponent(req.url); // .replaceAll("---", "-%2D-")
+      fs.readFile(filePath, "ascii", function (error, content) {
+        if (error) {
+          console.log(error);
+          return;
+        }
         res.writeHead(200, { "Content-Type": "text/markdown" });
         res.end(content, "utf-8");
       });
