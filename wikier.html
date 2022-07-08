@@ -6,28 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wikier</title>
     <style>
-        header{
-            display: flex;
-            flex-direction: column;
-        }
+      header {
+        display: flex;
+        flex-direction: column;
+      }
+      iframe {
+        display: flex;
+      }
     </style>
   </head>
   <body>
     <header></header>
     <main>
       <h1>Wikier</h1>
+      <div id="content"></div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/showdown@latest/dist/showdown.min.js"></script>
     <script>
+      let converter = new showdown.Converter();
       let menuItems;
       fetch("/api/menu")
         .then((response) => response.json())
         .then((data) => {
           menuItems = data;
           menuItems.forEach((menuItem) => {
-            if(menuItem.includes(".order")) return
+            if (menuItem.includes(".order")) return;
+            if (menuItem.includes(".attachments")) return;
             let link = document.createElement("a");
             link.innerHTML = menuItem;
-            link.href = window.location.href + menuItem;
+            link.onclick = () => {
+              fetch(window.location.href + menuItem)
+                .then((response) => response.text())
+                .then(
+                  (result) =>
+                    (document.getElementById("content").innerHTML =
+                      converter.makeHtml(result))
+                );
+            };
             document.getElementsByTagName("header")[0].append(link);
           });
         });
